@@ -9,7 +9,9 @@ const createUserToken = async (user, req, res) => {
     "nossosecret"
   );
 
-  res.status(200).json({ message: "Você está autenticado!", token: token });
+  return res
+    .status(200)
+    .json({ message: "Você está autenticado!", token: token });
 };
 
 module.exports = createUserToken;
