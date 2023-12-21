@@ -16,6 +16,8 @@ app.use(express.static("public"));
 // ROTAS
 const UserRoutes = require("./routes/UserRoutes");
 app.use("/users", UserRoutes);
+const PetRoutes = require("./routes/PetRoutes");
+app.use("/pets", PetRoutes);
 
 // INICIALIZANDO SERVIDOR APÓS CONEXÃO COM BANCO SER BEM SUCEDIDA
 const port = 5000;
