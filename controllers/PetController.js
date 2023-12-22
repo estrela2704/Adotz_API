@@ -122,4 +122,108 @@ module.exports = class PetController {
       return res.status(500).json({ message: "Algo de errado aconteceu!" });
     }
   }
+
+  static async removePetById(req, res) {
+    try {
+      const id = req.params.id;
+
+      if (!objectId.isValid(id)) {
+        return res.status(422).json({ message: "ID inválido!" });
+      }
+
+      const pet = await Pet.findOne({ _id: id });
+
+      if (!pet) {
+        return res.status(404).json({ message: "Pet não encontrado!" });
+      }
+
+      const token = getToken(req);
+      const user = await getUserByToken(token);
+
+      if (pet.user._id.toString() !== user._id.toString()) {
+        return res.status(422).json({
+          message:
+            "Houve um problema ao processar sua solicitação!Tente novamente mais tarde.",
+        });
+      }
+
+      await Pet.deleteOne({ _id: id });
+
+      return res.status(200).json({ message: "Pet removido do sistema!" });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: "Algo de errado aconteceu!" });
+    }
+  }
+
+  static async updatePet(req, res) {
+    try {
+      const id = req.params.id;
+
+      const { name, age, weight, color } = req.body;
+      const images = req.files;
+
+      const updatedData = {};
+
+      if (!objectId.isValid(id)) {
+        return res.status(422).json({ message: "ID inválido!" });
+      }
+
+      const pet = await Pet.findOne({ _id: id });
+
+      if (!pet) {
+        return res.status(404).json({ message: "Pet não encontrado!" });
+      }
+
+      const token = getToken(req);
+      const user = await getUserByToken(token);
+
+      if (pet.user._id.toString() !== user._id.toString()) {
+        return res.status(422).json({
+          message:
+            "Houve um problema ao processar sua solicitação!Tente novamente mais tarde.",
+        });
+      }
+
+      if (!name) {
+        return res.status(422).json({ message: "Preencha o campo nome!" });
+      } else {
+        updatedData.name = name;
+      }
+
+      if (!age) {
+        return res.status(422).json({ message: "Preencha o campo idade!" });
+      } else {
+        updatedData.age = age;
+      }
+
+      if (!weight) {
+        return res.status(422).json({ message: "Preencha o campo peso!" });
+      } else {
+        updatedData.weight = weight;
+      }
+
+      if (!color) {
+        return res.status(422).json({ message: "Preencha o campo cor!" });
+      } else {
+        updatedData.color = color;
+      }
+
+      if (images.length === 0) {
+        return res.status(422).json({ message: "A imagem é obrigatória!" });
+      } else {
+        updatedData.images = [];
+        images.map((image) => {
+          updatedData.images.push(image.filename);
+        });
+      }
+
+      await Pet.findByIdAndUpdate(id, updatedData);
+
+      return res.status(200).json({ message: "Pet atualizado!" });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: "Algo de errado aconteceu!" });
+    }
+  }
 };
