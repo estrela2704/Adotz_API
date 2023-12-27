@@ -226,4 +226,81 @@ module.exports = class PetController {
       return res.status(500).json({ message: "Algo de errado aconteceu!" });
     }
   }
+
+  static async schedulePet(req, res) {
+    try {
+      const id = req.params.id;
+
+      const pet = await Pet.findOne({ _id: id });
+
+      if (!pet) {
+        return res.status(404).json({ message: "Pet não encontrado!" });
+      }
+
+      const token = getToken(req);
+      const user = await getUserByToken(token);
+
+      if (pet.user._id.equals(user._id)) {
+        return res.status(422).json({
+          message: "Você não pode agendar uma visita ao proprio Pet.",
+        });
+      }
+
+      if (pet.adopter) {
+        if (pet.adopter._id.equals(user._id)) {
+          return res.status(422).json({
+            message: "Você ja agendou uma visita a este Pet.",
+          });
+        }
+      }
+
+      pet.adopter = {
+        _id: user._id,
+        name: user.name,
+        image: user.image,
+      };
+
+      await Pet.findByIdAndUpdate(id, pet);
+
+      return res.status(201).json({
+        message: `A visita foi agendada com sucesso, entre em contato com ${pet.user.name} pelo telefone ${pet.user.phone}!`,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: "Algo de errado aconteceu!" });
+    }
+  }
+
+  static async concludeSchedule(req, res) {
+    try {
+      const id = req.params.id;
+
+      const pet = await Pet.findOne({ _id: id });
+
+      if (!pet) {
+        return res.status(404).json({ message: "Pet não encontrado!" });
+      }
+
+      const token = getToken(req);
+      const user = await getUserByToken(token);
+
+      if (pet.user._id.toString() !== user._id.toString()) {
+        return res.status(422).json({
+          message:
+            "Houve um problema ao processar sua solicitação!Tente novamente mais tarde.",
+        });
+      }
+
+      pet.avaible = false;
+
+      pet.findByIdAndUpdate(id, pet);
+
+      res
+        .status(200)
+        .json({ message: "Parabéns, o ciclo de adoção foi concluido!" });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: "Algo de errado aconteceu!" });
+    }
+  }
 };

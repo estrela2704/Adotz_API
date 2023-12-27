@@ -22,5 +22,7 @@ router.patch(
   authMidlleware,
   PetController.updatePet
 );
+router.patch("/schedule/:id", authMidlleware, PetController.schedulePet);
+router.patch("/conclude/:id", authMidlleware, PetController.concludeSchedule);
 
 module.exports = router;
