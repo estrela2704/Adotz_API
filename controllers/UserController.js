@@ -15,6 +15,10 @@ module.exports = class UserController {
         return res.status(422).json({ message: "Preencha o campo nome!" });
       }
 
+      if (!phone) {
+        return res.status(422).json({ message: "Preencha o campo telefone!" });
+      }
+
       if (!email) {
         return res.status(422).json({ message: "Preencha o campo email!" });
       }
@@ -27,10 +31,6 @@ module.exports = class UserController {
         return res
           .status(422)
           .json({ message: "Preencha o campo confirmação de senha!" });
-      }
-
-      if (!phone) {
-        return res.status(422).json({ message: "Preencha o campo telefone!" });
       }
 
       if (password !== confirmpassword) {
