@@ -2,7 +2,7 @@
 
 API REST feita para uso em uma aplicação de adoção responsável de animais, para utilizar basta ter o NodeJS, NPM, e o MongoDB instalados em seu servidor.
 
-##Instalação
+## Instalação
 1. Clonar o repositório.
 2. Configurar o arquivo db/conn.js  com suas credenciais de banco de dados caso haja necessidade.
 3. Rodar o comando "npm install" para instalação das bibliotecas necessárias.
