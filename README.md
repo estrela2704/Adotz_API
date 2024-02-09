@@ -9,3 +9,8 @@ API REST feita para uso em uma aplicação de adoção responsável de animais, 
 4. Rodar o comando "npm start" para inicialização da API, por padrão ela rodará na porta 5000, caso haja necessidade trocar o valor de "port" no arquivo index.js.
 
 Pronto! Sua API estará pronta para uso.
+
+
+## Autor
+
+- Felipe Estrela de Albuquerque
